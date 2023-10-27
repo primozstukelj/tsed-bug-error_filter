@@ -1,67 +1,22 @@
-<p style="text-align: center" align="center">
-  <a href="https://tsed.io" target="_blank"><img src="https://tsed.io/tsed-og.png" width="200" alt="Ts.ED logo"/></a>
-</p>
+# Project to reproduce an issue with tsed/express
 
-<div align="center">
-  <h1>Ts.ED - tsed</h1>
-  <br />
-  <div align="center">
-    <a href="https://cli.tsed.io/">Website</a>
-    <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
-    <a href="https://cli.tsed.io/getting-started.html">Getting started</a>
-    <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
-    <a href="https://api.tsed.io/rest/slack/tsedio/tsed">Slack</a>
-    <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
-    <a href="https://twitter.com/TsED_io">Twitter</a>
-  </div>
-  <hr />
-</div>
+The issue is described in <[https://github.com/tsedio/tsed/issues/2416](https://github.com/tsedio/tsed/issues/2492)>.
 
-> An awesome project based on Ts.ED framework
+## Integration tests
 
-## Getting started
+Run:
 
-> **Important!** Ts.ED requires Node >= 14, Express >= 4 and TypeScript >= 4.
-
-```batch
-# install dependencies
-$ npm install
-
-# serve
-$ npm run start
-
-# build for production
-$ npm run build
-$ npm run start:prod
+```shell
+npm run test
 ```
 
-## Docker
+## To test manually
 
+### When error is thrown in controller, the ctx.request.params are not defined in ErrorFilter
+
+To reproduce it:
+
+```shell
+curl --request POST --url http://localhost:8083/rest/error/testError?queryId=test --data '{"bodyId": "bodyId"}'
 ```
-# build docker image
-docker compose build
-
-# start docker image
-docker compose up
-```
-
-## Barrelsby
-
-This project uses [barrelsby](https://www.npmjs.com/package/barrelsby) to generate index files to import the controllers.
-
-Edit `.barreslby.json` to customize it:
-
-```json
-{
-  "directory": [
-    "./src/controllers/rest",
-    "./src/controllers/pages"
-  ],
-  "exclude": [
-    "__mock__",
-    "__mocks__",
-    ".spec.ts"
-  ],
-  "delete": true
-}
-```
+Response with status code 500 is returned and object that contains params, query and body object. Observe params are empty.
